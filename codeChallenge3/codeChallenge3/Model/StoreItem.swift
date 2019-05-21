@@ -16,15 +16,13 @@ struct StoreItem: Codable {
     
     var title: String
     var year: String
-    var imdbID: String
-    var type: String
-    var poster: String
+//    var type: String
+    var poster: URL
     
     enum CodingKeys: String, CodingKey {
         case title = "Title"
         case year = "Year"
-        case imdbID
-        case type = "Type"
+//        case type = "Type"
         case poster = "Poster"
     }
     
@@ -32,9 +30,8 @@ struct StoreItem: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         title = try values.decode(String.self, forKey: CodingKeys.title)
         year = try values.decode(String.self, forKey: CodingKeys.year)
-        imdbID = try values.decode(String.self, forKey: CodingKeys.imdbID)
-        type = try values.decode(String.self, forKey: CodingKeys.type)
-        poster = try values.decode(String.self, forKey: CodingKeys.poster)
+//        type = try values.decode(String.self, forKey: CodingKeys.type)
+        poster = try values.decode(URL.self, forKey: CodingKeys.poster)
         
     }
 }

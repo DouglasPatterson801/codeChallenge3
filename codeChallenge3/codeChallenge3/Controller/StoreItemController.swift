@@ -12,7 +12,9 @@ struct StoreItemController {
     
     func fetchItems(matching query: [String : String], completion: @escaping ([StoreItem]?) -> Void) {
         
-        let baseURL = URL(string: "http://www.omdbapi.com/?&apikey=ec7544d4")!
+        
+        let apiKey = "apikey=ec7544d4"
+        let baseURL = URL(string: "http://www.omdbapi.com/?&\(apiKey)")!
         
         guard let url = baseURL.withQueries(query) else {
             completion(nil)

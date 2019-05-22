@@ -14,7 +14,8 @@ class TableViewController: UITableViewController {
     
     let storeItemController = StoreItemController()
     
-    var items = [StoreItem]()
+    var movies = [Movie]()
+    var items = [Movie]()
     var page = 1
     
     //==================================================
@@ -23,6 +24,7 @@ class TableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchBar.delegate = self
     }
     
     func fetchMatchingItems() {
@@ -33,18 +35,14 @@ class TableViewController: UITableViewController {
         let searchTerm = searchBar.text ?? ""
         
         if !searchTerm.isEmpty {
-            let query = [
-                "s": searchTerm,
-                // could add type here "type": segmentController[indexPath.row] (something like that)
-                "page": "\(page)"
-            ]
+            let query = ["s": "\(searchTerm)", "apikey": "ec7544d4"]
                 
             storeItemController.fetchItems(matching: query, completion: { (items) in
                 
                 DispatchQueue.main.async {
                     
                     if let items = items {
-                        self.items = items
+//                        self.items = items
                         self.tableView.reloadData()
                     } else {
                         print("unable to load data")
@@ -56,14 +54,18 @@ class TableViewController: UITableViewController {
     
     func configure(cell: UITableViewCell, forItemAt indexPath: IndexPath) {
         
-        let item = items[indexPath.row]
+        let movie = items[indexPath.row]
         
-        cell.textLabel?.text = item.title
-        cell.detailTextLabel?.text = item.year
+        cell.textLabel?.text = movie.title
+        cell.detailTextLabel?.text = movie.year
         cell.imageView?.image = UIImage(named: "gray")
         
-        let task = URLSession.shared.dataTask(with: item.poster) { (data, response, error) in
-            
+        
+        guard let poster = movie.poster,
+        let posterURL = URL(string: poster) else { return }
+        let task = URLSession.shared.dataTask(with: posterURL) { (data, respone, error) in
+//        let task = URLSession.shared.dataTask(with: item.poster) { (data, response, error) in
+        
             guard let imageData = data else {
                 return
             }

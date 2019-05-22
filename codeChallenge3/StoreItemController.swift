@@ -10,7 +10,7 @@ import UIKit
 
 struct StoreItemController {
     
-    func fetchItems(matching query: [String : String], completion: @escaping ([StoreItem]?) -> Void) {
+    func fetchItems(matching query: [String : String], completion: @escaping ([Movie]?) -> Void) {
         
         
         let apiKey = "apikey=ec7544d4"

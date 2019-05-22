@@ -7,3 +7,22 @@
 //
 
 import Foundation
+import CoreData
+
+enum Stack {
+    
+    static let container: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "Movie")
+        container.loadPersistentStores(){ (storeDescription, error) in
+            print(storeDescription)
+            if let error = error {
+                fatalError("Unresolved error \(error)")
+            }
+        }
+        return container
+    }()
+    
+    static var context: NSManagedObjectContext {
+        return container.viewContext
+    }
+}

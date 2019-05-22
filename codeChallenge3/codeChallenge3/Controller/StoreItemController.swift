@@ -10,7 +10,7 @@ import UIKit
 
 struct StoreItemController {
     
-    func fetchItems(matching query: [String : String], completion: @escaping ([StoreItem]?) -> Void) {
+    func fetchItems(matching query: [String: String], completion: @escaping (Movie?) -> Void) {
         
         
         let apiKey = "apikey=ec7544d4"
@@ -21,20 +21,42 @@ struct StoreItemController {
             print("Unable to build URL with supplied queries")
             return
         }
+        
      
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             let decoder = JSONDecoder()
-            if let data = data,
-                let storeItems = try? decoder.decode(StoreItems.self, from: data) {
-                completion(storeItems.results)
-            } else {
-                print("Either no data was returned, or data was not serialized.")
+            guard let data = data else { return }
+            
+            let jsonObjects = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
+            if let dictionary = jsonObjects as? Dictionary<String, Any> {
                 
-                completion(nil)
-                return
+                print(dictionary.description)
+                
+                guard let results = Movie(dictionary: dictionary) else {
+                    print("Error")
+                    return
+                }
+                completion(results)
+                self.saveToPersistentStorage()
+                
             }
+            
+  
         }
         
         task.resume()
     }
+    
+    
+    
+    func saveToPersistentStorage() {
+        
+        do {
+            try Stack.context.save()
+        } catch {
+            print("Error. Unable to save to persistent storage")
+        }
+        
+    }
 }
+
